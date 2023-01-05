@@ -50,15 +50,16 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
     }
 
 
-def read_new_submissions(subreddit, past_comments: list, limit=50):
+def read_submissions(subreddit, past_submissions: list, limit=50):
 
     return {
         submission.id: {
             "author": submission.author.name,
+            "title": submission.title,
             "comments": {
                 comment.id: regex_check(comment.body, BOT_CALL_EXP)
                 for comment in submission.comments
-                if comment.id not in past_comments
+                if submission.id not in past_submissions
             },
             "repo": regex_check(submission.selftext, REPO_EXP),
         }

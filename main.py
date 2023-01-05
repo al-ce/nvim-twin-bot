@@ -1,10 +1,10 @@
 import praw
 from constants import BRANCH_URL_BASE
-from util_classes import DateHandler, Message
+from util_classes import DateHandler, Logger, Message
 from util_funcs import (
     check_latest_branch,
     new_repos_in_prs,
-    read_new_submissions,
+    read_submissions,
     template_link,
 )
 
@@ -25,28 +25,50 @@ def main():
 
     curr_prs: dict = new_repos_in_prs(current_contents_path)
 
+    # Read past submissions in this week's branch
+    logger = Logger(latest_branch)
+    past_submissions = logger.submissions
+
     subreddit = REDDIT.subreddit("nvimtwindemo")
 
-    past_comments = []
+    bot_replies_new = {}
 
-    submissions = read_new_submissions(subreddit, past_comments, 50)
+    new_subs = read_submissions(subreddit, past_submissions, 50)
 
-    for k, v in submissions.items():
-        for comment_id, bot_call in v["comments"].items():
-            past_comments.append(comment_id)
+
+    for sub_id, info in new_subs.items():
+        for comment_id, bot_call in info["comments"].items():
             if bot_call:
-                if v["repo"] in curr_prs:
+                if info["repo"] in curr_prs:
                     msg = Message.thank_you(
-                        v["author"],
-                        v["repo"],
-                        curr_prs[v["repo"]]
+                        info["author"],
+                        info["repo"],
+                        curr_prs[info["repo"]]
                     )
                     print(msg)
+                    bot_replies_new[sub_id] = {
+                            "sub_title": info["title"],
+                            "comment_id": comment_id,
+                            "message": 'thanks'
+                        }
+
                 else:
                     category = bot_call.split("-")[-1]
                     link = template_link(category)
                     msg = Message.links(latest_branch, category, link)
                     print(msg)
+                    bot_replies_new[sub_id] = {
+                            "sub_title": info["title"],
+                            "comment_id": comment_id,
+                            "message": 'links'
+                        }
+            else:
+                print(sub_id, info["title"], " | no bot call")
+
+
+
+    # Append new submissions to the log
+    logger.json_log(past_submissions | bot_replies_new)
 
 
 if __name__ == "__main__":

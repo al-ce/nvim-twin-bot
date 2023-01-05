@@ -58,9 +58,10 @@ class Logger:
                 return json.load(f)
 
         Path(f"json/{self.branch}").mkdir(parents=True, exist_ok=True)
+        self.json_log({}, "w")
         return {}
 
-    def json_log(self, submissions: dict, mode="a"):
+    def json_log(self, submissions: dict, mode="w"):
         """Log the matched submissions to a json file."""
 
         with open(self.submissions_path, mode) as f:
