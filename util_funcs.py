@@ -50,26 +50,6 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
     }
 
 
-def read_submissions(subreddit, past_submissions: list, limit=50):
-
-    return {
-        submission.id: {
-            "author": submission.author.name,
-            "title": submission.title,
-            "comments": {
-                comment.id: regex_check(comment.body, BOT_CALL_EXP)
-                for comment in submission.comments
-                if submission.id not in past_submissions
-            },
-            # This only grabs the first repo match, so it's possible we might
-            # get a false negative, but this is preferable to a false positive
-            # when we decide whether to thank the user or post links.
-            "repo": regex_check(submission.selftext, REPO_EXP),
-        }
-        for submission in subreddit.new(limit=50)
-    }
-
-
 def regex_check(body: str, expression: str) -> str:
     regex_match = expression.search(body)
     if regex_match:

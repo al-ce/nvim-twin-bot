@@ -1,10 +1,10 @@
 import praw
-from constants import BRANCH_URL_BASE
+from constants import BOT_CALL_EXP, BRANCH_URL_BASE, REPO_EXP
 from util_classes import DateHandler, Logger, Message
 from util_funcs import (
     check_latest_branch,
     new_repos_in_prs,
-    read_submissions,
+    regex_check,
     template_link,
 )
 
@@ -33,40 +33,41 @@ def main():
 
     bot_replies_new = {}
 
-    new_subs = read_submissions(subreddit, past_submissions, 50)
+    recent_submissions = [sub for sub in subreddit.new(
+        limit=500) if date_handler.same_week(sub.created_utc)]
 
-    for sub_id, info in new_subs.items():
-        for comment_id, bot_call in info["comments"].items():
-            if bot_call:
-                if info["repo"] in curr_prs:
-                    msg = Message.thank_you(
-                        info["author"],
-                        info["repo"],
-                        curr_prs[info["repo"]]
-                    )
-                    print(msg)
-                    bot_replies_new[sub_id] = {
-                        "sub_title": info["title"],
-                        "comment_id": comment_id,
-                        "message": 'thanks'
-                    }
+    for submission in recent_submissions:
+        if submission.id in past_submissions:
+            continue
+        author = submission.author.name
+        submission_id = submission.id
+        for comment in submission.comments:
+            bot_call = regex_check(comment.body, BOT_CALL_EXP)
+            if not bot_call:
+                continue
 
-                    logger.json_log(past_submissions | bot_replies_new)
+            bot_replies_new[submission_id] = {
+                "author": author,
+                "title": submission.title,
+                "url": submission.url,
+                "comment_id": comment.id,
+                "message": 'links',
+            }
 
-                else:
-                    category = bot_call.split("-")[-1]
-                    link = template_link(category)
-                    msg = Message.links(latest_branch, category, link)
-                    print(msg)
-                    bot_replies_new[sub_id] = {
-                        "sub_title": info["title"],
-                        "comment_id": comment_id,
-                        "message": 'links'
-                    }
-                    logger.json_log(past_submissions | bot_replies_new)
+            repo = regex_check(submission.selftext, REPO_EXP)
+            if repo and repo in curr_prs:
+                pr_url = curr_prs[repo]
+                msg = Message.thank_you(author, repo, pr_url)
+                print(msg)
+                bot_replies_new[submission_id]["message"] = 'thanks'
+                bot_replies_new[submission_id]["pr_url"] = pr_url
             else:
-                print(sub_id, info["title"], " | no bot call")
+                category = bot_call.split("-")[-1]
+                link = template_link(category)
+                msg = Message.links(latest_branch, category, link)
+                print(msg)
 
+            logger.json_log(past_submissions | bot_replies_new)
 
 if __name__ == "__main__":
     main()
