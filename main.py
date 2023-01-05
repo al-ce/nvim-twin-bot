@@ -35,7 +35,6 @@ def main():
 
     new_subs = read_submissions(subreddit, past_submissions, 50)
 
-
     for sub_id, info in new_subs.items():
         for comment_id, bot_call in info["comments"].items():
             if bot_call:
@@ -47,10 +46,12 @@ def main():
                     )
                     print(msg)
                     bot_replies_new[sub_id] = {
-                            "sub_title": info["title"],
-                            "comment_id": comment_id,
-                            "message": 'thanks'
-                        }
+                        "sub_title": info["title"],
+                        "comment_id": comment_id,
+                        "message": 'thanks'
+                    }
+
+                    logger.json_log(past_submissions | bot_replies_new)
 
                 else:
                     category = bot_call.split("-")[-1]
@@ -58,17 +59,13 @@ def main():
                     msg = Message.links(latest_branch, category, link)
                     print(msg)
                     bot_replies_new[sub_id] = {
-                            "sub_title": info["title"],
-                            "comment_id": comment_id,
-                            "message": 'links'
-                        }
+                        "sub_title": info["title"],
+                        "comment_id": comment_id,
+                        "message": 'links'
+                    }
+                    logger.json_log(past_submissions | bot_replies_new)
             else:
                 print(sub_id, info["title"], " | no bot call")
-
-
-
-    # Append new submissions to the log
-    logger.json_log(past_submissions | bot_replies_new)
 
 
 if __name__ == "__main__":

@@ -61,6 +61,9 @@ def read_submissions(subreddit, past_submissions: list, limit=50):
                 for comment in submission.comments
                 if submission.id not in past_submissions
             },
+            # This only grabs the first repo match, so it's possible we might
+            # get a false negative, but this is preferable to a false positive
+            # when we decide whether to thank the user or post links.
             "repo": regex_check(submission.selftext, REPO_EXP),
         }
         for submission in subreddit.new(limit=50)
