@@ -4,6 +4,7 @@ from util_classes import DateHandler, Logger, Message
 from util_funcs import (
     check_latest_branch,
     new_repos_in_prs,
+    pr_number,
     regex_check,
     reply_dict_values,
     template_link,
@@ -50,7 +51,7 @@ def main():
         msg = Message.thank_you(author, repo, pr_url)
         reply = 'thanks'
 
-        if not repo and pr_url:
+        if not pr_url:
             category = bot_call.split("-")[-1]
             link = template_link(category)
             msg = Message.links(latest_branch, category, link)
@@ -60,7 +61,7 @@ def main():
 
         logger.json_log(
             past_replies |
-            {sub_id: reply_dict_values(comment.id, reply, pr_url)}
+            {sub_id: reply_dict_values(comment.id, reply, pr_number(pr_url))}
         )
 
 

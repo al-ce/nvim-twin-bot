@@ -50,6 +50,12 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
     }
 
 
+def pr_number(pr_url: str) -> str:
+    if not pr_url:
+        return None
+    return pr_url.split("/")[-1]
+
+
 def regex_check(body: str, expression: str) -> str:
     regex_match = expression.search(body)
     if regex_match:
@@ -62,7 +68,7 @@ def reply_dict_values(comment_id, msg, pr_url) -> dict:
     return {
         "call_comment_id": comment_id,
         "message": msg,
-        "pr_url": pr_url,
+        "pr": pr_url,
     }
 
 
