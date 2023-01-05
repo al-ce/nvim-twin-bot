@@ -14,10 +14,10 @@ class DateHandler:
 
     def __init__(self):
         self.latest_branch = datetime.fromtimestamp(
-            self.get_last_sunday() + 604800, UTC).strftime("%Y-%b-%d")
+            self.last_sunday() + 604800, UTC).strftime("%Y-%b-%d")
 
-    def get_last_sunday(self) -> datetime:
-
+    def last_sunday(self) -> datetime:
+        """Returns the last Sunday in UTC"""
         ep = time.time()
         now = datetime.fromtimestamp(ep, UTC)
         seconds_elapsed_today = (now.hour * 3600) + \
@@ -26,11 +26,7 @@ class DateHandler:
 
         return ep - (weekday) * 86400 - seconds_elapsed_today
 
-    def same_week(self, unix_time: str) -> bool:
-        """Returns True if the unix_time is later than last Sunday"""
-        return True if int(unix_time) > self.get_last_sunday() else False
-
-    def parse_latest_branch(self) -> tuple:
+    def parse_date(self) -> tuple:
         date = self.latest_branch.split("-")
         return date[0], date[1], date[2]
 

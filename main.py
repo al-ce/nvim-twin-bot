@@ -18,10 +18,11 @@ REDDIT = praw.Reddit(
 
 def main():
     date_handler = DateHandler()
+    last_sunday = date_handler.last_sunday()
     latest_branch = date_handler.latest_branch
     latest_branch_url = f"{BRANCH_URL_BASE}{latest_branch}"
     check_latest_branch(latest_branch_url)
-    year, month, day = date_handler.parse_latest_branch()
+    year, month, day = date_handler.parse_date()
     current_contents_path = f"contents/{year}/{month}/{day}"
 
     curr_prs: dict = new_repos_in_prs(current_contents_path)
@@ -35,7 +36,7 @@ def main():
     recent_comments = [
         comment for sub in subreddit.new(limit=500)
         for comment in sub.comments
-        if date_handler.same_week(sub.created_utc)
+        if comment.created_utc > last_sunday
         and sub.id not in past_replies
         and regex_check(comment.body, BOT_CALL_EXP)
     ]
