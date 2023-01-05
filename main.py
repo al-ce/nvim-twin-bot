@@ -5,6 +5,7 @@ from util_funcs import (
     check_latest_branch,
     new_repos_in_prs,
     regex_check,
+    reply_dict_values,
     template_link,
 )
 
@@ -27,47 +28,43 @@ def main():
 
     # Read past submissions in this week's branch
     logger = Logger(latest_branch)
-    past_submissions = logger.submissions
+    past_replies = logger.submissions
 
     subreddit = REDDIT.subreddit("nvimtwindemo")
 
-    bot_replies_new = {}
-
-    recent_submissions = [sub for sub in subreddit.new(
-        limit=500) if date_handler.same_week(sub.created_utc)]
+    recent_submissions = [
+        sub for sub in subreddit.new(limit=500)
+        if date_handler.same_week(sub.created_utc)
+        and sub.id not in past_replies
+    ]
 
     for submission in recent_submissions:
-        if submission.id in past_submissions:
-            continue
+        sub_id = submission.id
         author = submission.author.name
-        submission_id = submission.id
         for comment in submission.comments:
             bot_call = regex_check(comment.body, BOT_CALL_EXP)
             if not bot_call:
                 continue
 
-            bot_replies_new[submission_id] = {
-                "author": author,
-                "title": submission.title,
-                "url": submission.url,
-                "comment_id": comment.id,
-                "message": 'links',
-            }
-
             repo = regex_check(submission.selftext, REPO_EXP)
-            if repo and repo in curr_prs:
-                pr_url = curr_prs[repo]
+            pr_url = curr_prs.get(repo)
+            if repo and pr_url:
                 msg = Message.thank_you(author, repo, pr_url)
-                print(msg)
-                bot_replies_new[submission_id]["message"] = 'thanks'
-                bot_replies_new[submission_id]["pr_url"] = pr_url
+                reply = 'thanks'
             else:
                 category = bot_call.split("-")[-1]
                 link = template_link(category)
                 msg = Message.links(latest_branch, category, link)
-                print(msg)
+                reply = 'links'
 
-            logger.json_log(past_submissions | bot_replies_new)
+            new_reply = {
+                sub_id: reply_dict_values(comment.id, reply, pr_url)
+            }
+
+            print(msg)
+
+            logger.json_log(past_replies | new_reply)
+
 
 if __name__ == "__main__":
     main()

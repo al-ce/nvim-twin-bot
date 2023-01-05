@@ -26,6 +26,10 @@ class DateHandler:
 
         return ep - (weekday) * 86400 - seconds_elapsed_today
 
+    def same_week(self, unix_time: str) -> bool:
+        """Returns True if the unix_time is later than last Sunday"""
+        return True if int(unix_time) > self.get_last_sunday() else False
+
     def parse_latest_branch(self) -> tuple:
         date = self.latest_branch.split("-")
         return date[0], date[1], date[2]
@@ -74,13 +78,14 @@ class Message:
         """Since we found that the newsworthy repo already has a PR in the
         lastest branch, we thank the PR author for their contribution."""
 
-        return f"""Hey /u/{author}! It looks like you or someone on your behalf has already submitted a PR for this post to the upcoming TWiN edition!
+        return f"""Hey /u/{author} ! It looks like you or someone on your behalf has already submitted a PR for this post to the upcoming TWiN edition!
 PR url: {pr_url}
 Repo: {repo_url}
-Thank you for your contribution to This Week in Neovim!
 
 If this is a mistake, please read these guidelines and make a PR (and let the bot know!)
-- How to Contribute to TWiN: {TWIN_REPO}blob/master/README.md#how-to-contribute"""
+- How to Contribute to TWiN: {TWIN_REPO}blob/master/README.md#how-to-contribute
+
+Thank you for your contribution to This Week in Neovim!"""
 
     def links(lastest_branch: str, category: str, template_link) -> str:
         """Since we haven't found a PR for the newsworthy repo, we post the

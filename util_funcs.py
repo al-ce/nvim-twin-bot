@@ -57,6 +57,15 @@ def regex_check(body: str, expression: str) -> str:
     return None
 
 
+def reply_dict_values(comment_id, msg, pr_url) -> dict:
+    """Set the default values for the new entry in the reply dict."""
+    return {
+        "call_comment_id": comment_id,
+        "message": msg,
+        "pr_url": pr_url,
+    }
+
+
 def template_link(bot_call: str) -> str:
     bot_call.split("-")
     return TEMPLATE_LINKS[bot_call]
