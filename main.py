@@ -32,38 +32,35 @@ def main():
 
     subreddit = REDDIT.subreddit("nvimtwindemo")
 
-    recent_submissions = [
-        sub for sub in subreddit.new(limit=500)
+    recent_comments = [
+        comment for sub in subreddit.new(limit=500)
+        for comment in sub.comments
         if date_handler.same_week(sub.created_utc)
         and sub.id not in past_replies
+        and regex_check(comment.body, BOT_CALL_EXP)
     ]
 
-    for submission in recent_submissions:
-        sub_id = submission.id
-        author = submission.author.name
-        for comment in submission.comments:
-            bot_call = regex_check(comment.body, BOT_CALL_EXP)
-            if not bot_call:
-                continue
+    for comment in recent_comments:
+        sub_id = comment.submission.id
+        author = comment.submission.author.name
+        bot_call = regex_check(comment.body, BOT_CALL_EXP)
+        repo = regex_check(comment.submission.selftext, REPO_EXP)
+        pr_url = curr_prs.get(repo)
+        msg = Message.thank_you(author, repo, pr_url)
+        reply = 'thanks'
 
-            repo = regex_check(submission.selftext, REPO_EXP)
-            pr_url = curr_prs.get(repo)
-            if repo and pr_url:
-                msg = Message.thank_you(author, repo, pr_url)
-                reply = 'thanks'
-            else:
-                category = bot_call.split("-")[-1]
-                link = template_link(category)
-                msg = Message.links(latest_branch, category, link)
-                reply = 'links'
+        if not repo and pr_url:
+            category = bot_call.split("-")[-1]
+            link = template_link(category)
+            msg = Message.links(latest_branch, category, link)
+            reply = 'links'
 
-            new_reply = {
-                sub_id: reply_dict_values(comment.id, reply, pr_url)
-            }
+        print(msg)
 
-            print(msg)
-
-            logger.json_log(past_replies | new_reply)
+        logger.json_log(
+            past_replies |
+            {sub_id: reply_dict_values(comment.id, reply, pr_url)}
+        )
 
 
 if __name__ == "__main__":
