@@ -1,7 +1,7 @@
 import urllib.request
 from github import Github
 
-from constants import ACCESS_TOKEN, EXCLUDED_FILES, KW_EXP, REPO_EXP
+from constants import ACCESS_TOKEN, EXCLUDED_FILES, BOT_CALL_EXP, REPO_EXP, TEMPLATE_LINKS
 
 
 def check_latest_branch(url: str):
@@ -39,8 +39,6 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
             for file in pr.get_files()
             if not any(x in file.filename for x in EXCLUDED_FILES)
             and current_contents_path in file.filename
-            # TODO: add seen urls to a json we can check so we don't read them
-            # more than once
         }
         for pr in prs
     }
@@ -56,8 +54,9 @@ def read_new_submissions(subreddit, past_comments: list, limit=50):
 
     return {
         submission.id: {
+            "author": submission.author.name,
             "comments": {
-                comment.id: regex_check(comment.body, KW_EXP)
+                comment.id: regex_check(comment.body, BOT_CALL_EXP)
                 for comment in submission.comments
                 if comment.id not in past_comments
             },
@@ -72,3 +71,8 @@ def regex_check(body: str, expression: str) -> str:
     if regex_match:
         return regex_match.group(0)
     return None
+
+
+def template_link(bot_call: str) -> str:
+    bot_call.split("-")
+    return TEMPLATE_LINKS[bot_call]

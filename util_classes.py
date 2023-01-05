@@ -74,20 +74,24 @@ class Message:
         lastest branch, we thank the PR author for their contribution."""
 
         return f"""Hey /u/{author}! It looks like you or someone on your behalf has already submitted a PR for this post to the upcoming TWiN edition!
-Repo: {repo_url}
 PR url: {pr_url}
-Thank you for your contribution to This Week in Neovim!"""
+Repo: {repo_url}
+Thank you for your contribution to This Week in Neovim!
 
-    def links(lastest_branch: str, template: str) -> str:
+If this is a mistake, please read these guidelines and make a PR (and let the bot know!)
+- How to Contribute to TWiN: {TWIN_REPO}blob/master/README.md#how-to-contribute"""
+
+    def links(lastest_branch: str, category: str, template_link) -> str:
         """Since we haven't found a PR for the newsworthy repo, we post the
         links to the TWiN guidelines and a link to the PR template."""
 
-        return f"""Someone thinks this post is newsworthy, but the TWiNBot didn't find a PR for it for the latest This Week in Neovim. Consider making a PR! Here are some links to help you out:
+        msg = f"""Someone thinks this post is newsworthy - consider making a PR for this news in the upcoming This Week in Neovim edition! Here are some links to help you out:
 - TWiN main page: https://this-week-in-neovim.org/
 - How to Contribute to TWiN: {TWIN_REPO}blob/master/README.md#how-to-contribute
 - Latest TWiN contents repo branch: {TWIN_REPO}tree/{lastest_branch}
-We've also pregenerated a PR template for you, but please make sure to read the guidelines first!
-(in particular, please check that the id values in the template match the folder you are submitting to)
-```
-{template}
-````"""
+- Template Directory: {TWIN_REPO}tree/{lastest_branch}/template"""
+
+        if category:
+            msg += f"This bot was called with the '{category}' flag.\nHere is a link to a corresponding template for the PR: {template_link}.\nNevertheless, please read the guidelines linked above to ensure you're submitting to next week's branch, in the proper folder, and using the correct ids in the template."
+
+        return msg

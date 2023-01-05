@@ -5,6 +5,7 @@ from util_funcs import (
     check_latest_branch,
     new_repos_in_prs,
     read_new_submissions,
+    template_link,
 )
 
 
@@ -31,11 +32,21 @@ def main():
     submissions = read_new_submissions(subreddit, past_comments, 50)
 
     for k, v in submissions.items():
-        print(f"Submission: {k}")
-        print(f"Repo: {v['repo']}")
         for comment_id, bot_call in v["comments"].items():
-            print(f"Comment: {comment_id}")
-            print(f"Regex: {bot_call}")
+            past_comments.append(comment_id)
+            if bot_call:
+                if v["repo"] in curr_prs:
+                    msg = Message.thank_you(
+                        v["author"],
+                        v["repo"],
+                        curr_prs[v["repo"]]
+                    )
+                    print(msg)
+                else:
+                    category = bot_call.split("-")[-1]
+                    link = template_link(category)
+                    msg = Message.links(latest_branch, category, link)
+                    print(msg)
 
 
 if __name__ == "__main__":
