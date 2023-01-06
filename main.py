@@ -70,7 +70,7 @@ def main():
 
         print(f"Replying to {sub_id}-{comment.id}")
         print(msg)
-        comment.reply(msg)
+        comment.reply(body=msg)
 
         logger.json_log(
             past_replies |
