@@ -1,4 +1,4 @@
-# 🤖 nvim-TWiN-bot
+# 🤖 nvim-TWiN-bot (NOT LIVE)
 A Reddit bot to help [r/neovim](https://reddit.com/r/neovim) users to contribute to [This Week in Neovim](https://this-week-in-neovim.org) ([Github](https://github.com/phaazon/this-week-in-neovim-contents))
 
 ## Why this bot

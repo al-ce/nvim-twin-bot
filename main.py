@@ -44,10 +44,10 @@ def main():
         # print(f"Comment ID: {comment.id}")
         # print(f"\n{comment.body}\n\n")
 
-        if not (
+        if (
             comment.created_utc > last_sunday
-            and comment.submission.id not in past_replies
-            and bot_call
+            or comment.submission.id not in past_replies
+            or not bot_call
         ):
             # print("Not a valid comment")
             continue
