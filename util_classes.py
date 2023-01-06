@@ -87,7 +87,7 @@ Thank you for your contribution to [This Week in Neovim](https://this-week-in-ne
 - [Latest TWiN branch]({TWIN_REPO+'tree/'+lastest_branch})
 - [Template Directory]({TWIN_REPO+'tree/'+lastest_branch}/template)"""
 
-        if category:
+        if category != "!twinbot":
             msg += f"""\n\nHere is a [link]({TWIN_REPO+'tree/'+lastest_branch+template_link}) to a PR template for the `{category}` category.
 \n\nPlease read the submission guidelines and check the category before submitting. Thank you!"""
 

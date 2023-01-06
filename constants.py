@@ -40,5 +40,4 @@ TEMPLATE_LINKS = {
     "guides": "/template/2-guides/1-example.md",
     "new": "/template/3-new-plugins/1-example.md",
     "updates": "/template/4-updates/1-example.md",
-    "!twinbot": None,
 }
