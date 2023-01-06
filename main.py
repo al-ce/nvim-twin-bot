@@ -39,14 +39,17 @@ def main():
         past_replies = logger.submissions
         bot_call = regex_check(comment.body, BOT_CALL_EXP)
 
-        print(comment.body)
+        # print("-" * 20)
+        # print(f"Submission Title: {comment.submission.title}")
+        # print(f"Comment ID: {comment.id}")
+        # print(f"\n{comment.body}\n\n")
 
         if not (
             comment.created_utc > last_sunday
             and comment.submission.id not in past_replies
             and bot_call
         ):
-            print("Not a valid comment")
+            # print("Not a valid comment")
             continue
 
         latest_branch_url = f"{BRANCH_URL_BASE}{latest_branch}"
@@ -68,8 +71,8 @@ def main():
             msg = Message.links(author, latest_branch, link, category)
             reply = 'links'
 
-        print(f"Replying to {sub_id}-{comment.id}")
-        print(msg)
+        # print(f"Replying to {sub_id}-{comment.id}")
+        # print(msg)
         comment.reply(body=msg)
 
         logger.json_log(
