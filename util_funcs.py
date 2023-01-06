@@ -81,4 +81,4 @@ def reply_dict_values(comment_id, msg, pr_url) -> dict:
 
 def template_link(bot_call: str) -> str:
     bot_call.split("-")
-    return TEMPLATE_LINKS[bot_call]
+    return TEMPLATE_LINKS.get(bot_call)
