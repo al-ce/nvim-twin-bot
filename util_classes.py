@@ -11,6 +11,7 @@ import time
 
 
 class DateHandler:
+    """Handle date/time related functions relevant to TWiN repo."""
 
     def __init__(self):
         self.latest_branch = datetime.fromtimestamp(
@@ -43,7 +44,7 @@ class DateHandler:
 
 
 class Logger:
-    """Log the submissions to a json file."""
+    """Handles reading and writing to the submissions log"""
 
     def __init__(self, latest_branch: str):
         self.branch = latest_branch
@@ -69,6 +70,7 @@ class Logger:
 
 
 class Message:
+    """Returns the appropriate message for the bot call."""
 
     def thank_you(author, repo_url, pr_url):
         """Since we found that the newsworthy repo already has a PR in the

@@ -11,6 +11,7 @@ from util_classes import DateHandler
 
 
 def check_latest_branch(url: str):
+    """Check that the latest branch has been created."""
     try:
         urllib.request.urlopen(url)
         # Assume that the first matching url is the repo link
@@ -34,6 +35,7 @@ def check_url_status(repo_links: list):
 
 
 def new_repos_in_prs(current_contents_path: str) -> dict:
+    """Returns a dict of mentioned repos in this week's PRs."""
 
     g = Github(GH_TOKEN)
     repo = g.get_repo("phaazon/this-week-in-neovim-contents")
@@ -57,12 +59,14 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
 
 
 def pr_number(pr_url: str) -> str:
+    """Return the PR number from the PR url."""
     if not pr_url:
         return None
     return pr_url.split("/")[-1]
 
 
 def regex_check(body: str, expression: str) -> str:
+    """Return the first match from the regex expression if it matches."""
     regex_match = expression.search(body)
     if regex_match:
         return regex_match.group(0)
@@ -80,5 +84,6 @@ def reply_dict_values(comment_id, msg, pr_url) -> dict:
 
 
 def template_link(bot_call: str) -> str:
+    """Return the relevant template link for the bot call."""
     bot_call.split("-")
     return TEMPLATE_LINKS.get(bot_call)
