@@ -70,30 +70,25 @@ class Logger:
 
 class Message:
 
-    def thank_you(author: str, repo_url: str, pr_url: str) -> str:
+    def thank_you(author, repo_url, pr_url):
         """Since we found that the newsworthy repo already has a PR in the
         lastest branch, we thank the PR author for their contribution."""
 
-        return f"""Hey /u/{author} ! It looks like you or someone on your behalf has already submitted a PR for this post to the upcoming TWiN edition!
-PR url: {pr_url}
-Repo: {repo_url}
+        return f"""- [How to Contribute to TWiN]({TWIN_REPO}blob/master/README.md#how-to-contribute)\n\n
+A [PR]({pr_url}) for this news may already exist. If we made a mistake (let us know!), please read the guidelines and consider making a pull request.\n\n
+Thank you for your contribution to [This Week in Neovim](https://this-week-in-neovim.org)!"""
 
-If this is a mistake, please read these guidelines and make a PR (and let the bot know!)
-- How to Contribute to TWiN: {TWIN_REPO}blob/master/README.md#how-to-contribute
-
-Thank you for your contribution to This Week in Neovim!"""
-
-    def links(lastest_branch: str, category: str, template_link) -> str:
+    def links(author, lastest_branch, template_link, category):
         """Since we haven't found a PR for the newsworthy repo, we post the
         links to the TWiN guidelines and a link to the PR template."""
 
-        msg = f"""Someone thinks this post is newsworthy - consider making a PR for this news in the upcoming This Week in Neovim edition!
-- TWiN main page: https://this-week-in-neovim.org/
-- How to Contribute to TWiN: {TWIN_REPO}blob/master/README.md#how-to-contribute
-- Latest TWiN contents repo branch: {TWIN_REPO+'tree/'+lastest_branch}
-- Template Directory: {TWIN_REPO+'tree/'+lastest_branch}/template"""
+        msg = f"""Hi /u/{author}, please consider making a PR for this news in the upcoming [This Week in Neovim](https://this-week-in-neovim.org/) edition!
+- [How to Contribute to TWiN]({TWIN_REPO}blob/master/README.md#how-to-contribute)
+- [Latest TWiN branch]({TWIN_REPO+'tree/'+lastest_branch})
+- [Template Directory]({TWIN_REPO+'tree/'+lastest_branch}/template)"""
 
         if category:
-            msg += f"\nThis bot was called with the '{category}' flag.\nHere is a link to a corresponding template for the PR: {TWIN_REPO+'tree/'+lastest_branch+template_link}.\nNevertheless, please read the guidelines linked above to ensure you're submitting to next week's branch, in the proper folder, and using the correct ids in the template."
+            msg += f"""\n\nHere is a [link]({TWIN_REPO+'tree/'+lastest_branch+template_link}) to a PR template for the `{category}` category.
+\n\nPlease read the submission guidelines and check the category before submitting. Thank you!"""
 
         return msg

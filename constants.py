@@ -10,7 +10,10 @@ SUBMISSIONS_LOG = "submissions.json"
 TWIN_REPO = "https://github.com/phaazon/this-week-in-neovim-contents/"
 BRANCH_URL_BASE = f"{TWIN_REPO}tree/"
 
-ACCESS_TOKEN = dotenv_values(".env")["GH_ACCESS_TOKEN"]
+REDDIT_ID = dotenv_values(".env")["REDDIT_ID"]
+REDDIT_PASSWORD = dotenv_values(".env")["REDDIT_PASSWORD"]
+REDDIT_SECRET = dotenv_values(".env")["REDDIT_SECRET"]
+GH_TOKEN = dotenv_values(".env")["GH_ACCESS_TOKEN"]
 EXCLUDED_FILES = ["HEADER", "example", "did-you-know", "want-to-contribute"]
 GIT_REPO_DOMAINS = ["github", "gitlab", "bitbucket", "codeberg"]
 REPO_EXP = re.compile(
@@ -24,6 +27,7 @@ BOT_CALLS = [
     "!twinbot-guides",
     "!twinbot-new",
     "!twinbot-updates",
+    "!twinbot-update",
     "!twinbot",
 ]
 

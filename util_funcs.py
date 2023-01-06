@@ -1,7 +1,13 @@
 import urllib.request
 from github import Github
 
-from constants import ACCESS_TOKEN, EXCLUDED_FILES, BOT_CALL_EXP, REPO_EXP, TEMPLATE_LINKS
+from constants import (
+    GH_TOKEN,
+    EXCLUDED_FILES,
+    REPO_EXP,
+    TEMPLATE_LINKS,
+)
+from util_classes import DateHandler
 
 
 def check_latest_branch(url: str):
@@ -29,7 +35,7 @@ def check_url_status(repo_links: list):
 
 def new_repos_in_prs(current_contents_path: str) -> dict:
 
-    g = Github(ACCESS_TOKEN)
+    g = Github(GH_TOKEN)
     repo = g.get_repo("phaazon/this-week-in-neovim-contents")
     prs = repo.get_pulls(state="open")
 
@@ -69,6 +75,7 @@ def reply_dict_values(comment_id, msg, pr_url) -> dict:
         "call_comment_id": comment_id,
         "message": msg,
         "pr": pr_url,
+        "reply_time": DateHandler().current_time(),
     }
 
 
