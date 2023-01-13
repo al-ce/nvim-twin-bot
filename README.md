@@ -1,4 +1,10 @@
-# 🤖 nvim-TWiN-bot (NOT LIVE)
+# 🤖 nvim-TWiN-bot
+
+## In testing!
+Currently this only works in this testing [subreddit](https://www.reddit.com/r/nvimtwindemo/), so don't try to call it in `r/neovim`
+
+## Description
+
 A Reddit bot to help [r/neovim](https://reddit.com/r/neovim) users to contribute to [This Week in Neovim](https://this-week-in-neovim.org) ([Github](https://github.com/phaazon/this-week-in-neovim-contents))
 
 ## Why this bot
