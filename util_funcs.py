@@ -52,7 +52,7 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
         for pr in prs
     }
 
-    [print(f"{k}:\n\t{v}") for k, v in new_prs]
+    [print(f"{k}:\n\t{v}") for k, v in new_prs.items()]
 
     # Return the referenced repo links from the new PRs
     return {
