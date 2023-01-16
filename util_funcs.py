@@ -59,6 +59,7 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
         REPO_EXP.search(new_prs[pr_url][file_patch]).group(0): pr_url
         for pr_url in new_prs
         for file_patch in new_prs[pr_url]
+        if REPO_EXP.search(new_prs[pr_url][file_patch])
     }
 
 
