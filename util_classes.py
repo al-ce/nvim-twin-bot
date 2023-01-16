@@ -77,20 +77,27 @@ class Message:
         lastest branch, we thank the PR author for their contribution."""
 
         return f"""- [How to Contribute to TWiN]({TWIN_REPO}blob/master/README.md#how-to-contribute)\n\n
-A [PR]({pr_url}) for this news may already exist. If we made a mistake (let us know!), please read the guidelines and consider making a pull request.\n\n
-Thank you for your contribution to [This Week in Neovim](https://this-week-in-neovim.org)!"""
+A [PR]({pr_url}) for this news in the latest TWiN repo may already exist. If we made a mistake (let us know!), please read the guidelines and consider making a pull request.\n\n
+Thank you for your contribution to [This Week in Neovim](https://this-week-in-neovim.org)!\n\n
+- Automate your TWiN PRs with [@roobert](https://github.com/roobert)'s [twin-sh](https://github.com/roobert/twin-sh) wizard
+"""
 
-    def links(author, lastest_branch, template_link, category):
+    def links(author, latest_branch_url, template_link, category):
         """Since we haven't found a PR for the newsworthy repo, we post the
         links to the TWiN guidelines and a link to the PR template."""
 
+        branch_link = f"""- [Latest TWiN branch]({latest_branch_url})
+- [Template Directory]({latest_branch_url}/template)""" \
+        if latest_branch_url else """- The bot couldn't find next week's branch. Contribute to this Monday's if it's not too late, or consider [creating next week's](https://github.com/phaazon/this-week-in-neovim-contents/fork)!"""
+
         msg = f"""Hi /u/{author}, please consider making a PR for this news in the upcoming [This Week in Neovim](https://this-week-in-neovim.org/) edition!
 - [How to Contribute to TWiN]({TWIN_REPO}blob/master/README.md#how-to-contribute)
-- [Latest TWiN branch]({TWIN_REPO+'tree/'+lastest_branch})
-- [Template Directory]({TWIN_REPO+'tree/'+lastest_branch}/template)"""
+{branch_link}
+- Streamline your TWiN PRs with the [twin-sh wizard](https://github.com/roobert/twin-sh) by [@roobert](https://github.com/roobert)!
+"""
 
-        if category != "!twinbot":
-            msg += f"""\n\nHere is a [link]({TWIN_REPO+'tree/'+lastest_branch+template_link}) to a PR template for the `{category}` category.
+        if latest_branch_url and category != "!twinbot":
+            msg += f"""\n\nHere is a [link]({latest_branch_url+template_link}) to a PR template for the `{category}` category.
 \n\nPlease read the submission guidelines and check the category before submitting. Thank you!"""
 
         return msg

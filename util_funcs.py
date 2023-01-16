@@ -12,14 +12,15 @@ from util_classes import DateHandler
 
 def check_latest_branch(url: str):
     """Check that the latest branch has been created."""
+    print(f"Checking branch url: \n\t{url}")
     try:
         urllib.request.urlopen(url)
         # Assume that the first matching url is the repo link
-        return
+        return True
     except urllib.error.HTTPError:
-        print(f"HTTPError: {urllib.error.HTTPError.code}")
-        print("Next week's branch not found. Exiting...")
-        quit()
+        print(f"HTTPError: {urllib.error.HTTPError}")
+        print("This week's branch not found.")
+        return False
 
 
 def check_url_status(repo_links: list):
@@ -50,6 +51,9 @@ def new_repos_in_prs(current_contents_path: str) -> dict:
         }
         for pr in prs
     }
+
+    [print(f"{k}:\n\t{v}") for k, v in new_prs]
+
     # Return the referenced repo links from the new PRs
     return {
         REPO_EXP.search(new_prs[pr_url][file_patch]).group(0): pr_url
@@ -83,7 +87,6 @@ def reply_dict_values(comment_id, msg, pr_url) -> dict:
     }
 
 
-def template_link(bot_call: str) -> str:
+def get_template_link(category: str) -> str:
     """Return the relevant template link for the bot call."""
-    bot_call.split("-")
-    return TEMPLATE_LINKS.get(bot_call)
+    return TEMPLATE_LINKS.get(category)
